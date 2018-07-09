@@ -17,7 +17,7 @@ The helm gRPC libraries are located in the hapi directory.  They were generated 
 
 
 
-How to use Pyhelm
+How to use python-helm
 -----------------
 
 Looks like Pyhelm support only install chart from local folder
@@ -96,5 +96,3 @@ Looks like Pyhelm support only install chart from local folder
     tiller_ins.get_history(name, max=MAX_HISTORY)
     # rollback release 
     tiller_ins.rollback_release(name, version, timeout=REQUEST_TIMEOUT)
-    
-

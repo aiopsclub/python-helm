@@ -1,13 +1,10 @@
 import grpc
-import yaml
 import logging
 
 from hapi.services.tiller_pb2 import ReleaseServiceStub, ListReleasesRequest, \
     InstallReleaseRequest, UpdateReleaseRequest, UninstallReleaseRequest, \
     GetReleaseContentRequest, GetReleaseStatusRequest, GetVersionRequest, \
     RollbackReleaseRequest, GetHistoryRequest, TestReleaseRequest
-from hapi.chart.chart_pb2 import Chart
-from hapi.chart.config_pb2 import Config
 
 LOG = logging.getLogger('pyhelm')
 TILLER_PORT = 44134
@@ -281,7 +278,7 @@ class Tiller(object):
                                    metadata=self.metadata)
 
     def uninstall_release(self, release, timeout=REQUEST_TIMEOUT,
-                          disable_hooks=False, purge=True):
+                          disable_hooks=False, purge=False):
         """
         :params - release - helm chart release name
         :params - purge - deep delete of chart

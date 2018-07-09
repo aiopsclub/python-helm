@@ -1,13 +1,13 @@
-======
-PyHelm
-======
+============
+python-helm
+============
 
 Python bindings for the Helm package manager
 
 Helm gRPC
 ---------
 
-The helm gRPC libraries are located in the hapi directory.  They were generated with the grpc_tools.protoc utility against Helm 2.9.3.  Should you wish to re-generate them you can easily do so::
+The helm gRPC libraries are located in the hapi directory.  They were generated with the grpc_tools.protoc utility against Helm 2.9.10.  Should you wish to re-generate them you can easily do so::
 
     git clone https://github.com/kubernetes/helm ./helm
     python -m grpc_tools.protoc -I helm/_proto --python_out=. --grpc_python_out=. _proto/hapi/chart/*
@@ -24,9 +24,9 @@ Looks like Pyhelm support only install chart from local folder
 
 1. First you need repo_url and chart name to download chart::
 
-    from pyhelm.repo import from_repo
+    from pyhelm.repo import RepoUtils 
 
-    chart_path = chart_versions = from_repo('https://kubernetes-charts.storage.googleapis.com/', 'mariadb')
+    chart_path = from_repo('https://kubernetes-charts.storage.googleapis.com/', 'mariadb')
 
     print(chart_path)
     "/tmp/pyhelm-kibwtj8d/mongodb"
@@ -65,7 +65,9 @@ Looks like Pyhelm support only install chart from local folder
     from pyhelm.tiller import Tiller
 
     chart = ChartBuilder({'name': 'mongodb', 'source': {'type': 'directory', 'location': '/tmp/pyhelm-kibwtj8d/mongodb'}})
-    t.install_release(chart.get_helm_chart(), dry_run=False, namespace='default')
+    tiller_ins = Tiller(tiller_host, tiller_port)
+    # install release
+    tiller_ins.install_release(chart.get_helm_chart(), dry_run=False, namespace='default')
 
     Out[9]:
     release {
@@ -86,3 +88,13 @@ Looks like Pyhelm support only install chart from local folder
       }
       chart {....
     }
+    # list release 
+    tiller_ins.list_releases(limit=RELEASE_LIMIT, status_codes=[], namespace=None)
+    # delete release
+    tiller_ins.uninstall_release(release_name)
+    # get release history
+    tiller_ins.get_history(name, max=MAX_HISTORY)
+    # rollback release 
+    tiller_ins.rollback_release(name, version, timeout=REQUEST_TIMEOUT)
+    
+

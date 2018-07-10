@@ -7,8 +7,8 @@ from hapi.chart.chart_pb2 import Chart
 from hapi.chart.metadata_pb2 import Metadata
 from hapi.chart.config_pb2 import Config
 from supermutes.dot import dotify
-
-from .repo import RepoUtils 
+from .utils.exceptions import CustomError
+from .repo import RepoUtils
 
 LOG = logging.getLogger('pyhelm')
 
@@ -23,7 +23,7 @@ class ChartBuilder(object):
     source from external resources where necessary
     '''
 
-    def __init__(self, chart, parent=None):
+    def __init__(self, chart):
         '''
         Initialize the ChartBuilder class
 
@@ -35,14 +35,17 @@ class ChartBuilder(object):
         # cache for generated protoc chart object
         self._helm_chart = None
 
-        # record whether this is a dependency based chart
-        self.parent = parent
-
         # store chart schema
         self.chart = dotify(chart)
 
         # extract, pull, whatever the chart from its source
         self.source_directory = self.source_clone()
+ 
+    def __str__(self):
+        pass
+
+    def __repr__(self):
+        pass
 
     # 合并字典,将src的中的键值整合到dst中
     @staticmethod
@@ -116,31 +119,17 @@ class ChartBuilder(object):
         subpath = self.chart.source.get('subpath', '')
 
         if not 'type' in self.chart.source:
-            LOG.exception("Need source type for chart %s",
-                          self.chart.name)
-            return
-
-        if self.parent:
-            LOG.info("Cloning %s/%s as dependency for %s",
-                     self.chart.source.location,
-                     subpath, self.parent)
-        else:
-            LOG.info("Cloning %s/%s for release %s",
-                     self.chart.source.location,
-                     subpath, self.chart.name)
+            raise CustomError("Need source type for chart {}".format(self.chart.name)) 
 
         if self.chart.source.type == 'repo':
             self._source_tmp_dir = RepoUtils.from_repo(self.chart.source.location,
-                                                  self.chart.name,
-                                                  self.chart.version)
+                                                       self.chart.name,
+                                                       self.chart.version)
         elif self.chart.source.type == 'directory':
             self._source_tmp_dir = self.chart.source.location
 
         else:
-            LOG.exception("Unknown source type %s for chart %s",
-                          self.chart.name,
-                          self.chart.source.type)
-            return
+            raise CustomError("Unknown source type {} for chart {}".format(self.chart.source.type, self.chart.name)) 
 
         return os.path.join(self._source_tmp_dir, subpath)
 

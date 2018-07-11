@@ -2,7 +2,8 @@
 python-helm
 ============
 
-Python bindings for the Helm package manager
+python client for  helm.
+该项目主要依赖于官方的hapi的grpc接口
 
 Helm gRPC
 ---------
@@ -17,10 +18,8 @@ The helm gRPC libraries are located in the hapi directory.  They were generated 
 
 
 
-How to use python-helm
+How to use
 -----------------
-
-Looks like Pyhelm support only install chart from local folder
 
 1. First you need repo_url and chart name to download chart::
 
@@ -32,20 +31,7 @@ Looks like Pyhelm support only install chart from local folder
     "/tmp/pyhelm-kibwtj8d/mongodb"
 
 
-2. Now you can see that chart folder of mongodb::
-
-    In [3]: ls -la /tmp/pyhelm-kibwtj8d/mongodb
-    total 40
-    drwxr-xr-x  7 andrii  wheel   224 Mar 21 17:26 ./
-    drwx------  3 andrii  wheel    96 Mar 21 17:26 ../
-    -rwxr-xr-x  1 andrii  wheel     5 Jan  1  1970 .helmignore*
-    -rwxr-xr-x  1 andrii  wheel   261 Jan  1  1970 Chart.yaml*
-    -rwxr-xr-x  1 andrii  wheel  4394 Jan  1  1970 README.md*
-    drwxr-xr-x  8 andrii  wheel   256 Mar 21 17:26 templates/
-
-
-
-3. Next step to build ChartBuilder instance to manipulate with Tiller::
+2. Next step to build ChartBuilder instance to manipulate with Tiller::
 
     from pyhelm.chartbuilder import ChartBuilder
 
@@ -59,40 +45,27 @@ Looks like Pyhelm support only install chart from local folder
     description: "Chart for MongoDB"
 
 
-4. Install chart::
+3. Install chart::
 
     from pyhelm.chartbuilder import ChartBuilder
     from pyhelm.tiller import Tiller
-
+    # 构建chart元数据
     chart = ChartBuilder({'name': 'mongodb', 'source': {'type': 'directory', 'location': '/tmp/pyhelm-kibwtj8d/mongodb'}})
+
+    # 生成tiller连接实例
     tiller_ins = Tiller(tiller_host, tiller_port)
-    # install release
+
+    # 安装 release
     tiller_ins.install_release(chart.get_helm_chart(), dry_run=False, namespace='default')
 
-    Out[9]:
-    release {
-      name: "fallacious-bronco"
-      info {
-        status {
-          code: 6
-        }
-        first_deployed {
-          seconds: 1521647335
-          nanos: 746785000
-        }
-        last_deployed {
-          seconds: 1521647335
-          nanos: 746785000
-        }
-        Description: "Dry run complete"
-      }
-      chart {....
-    }
-    # list release 
+    # 列出 release 
     tiller_ins.list_releases(limit=RELEASE_LIMIT, status_codes=[], namespace=None)
-    # delete release
+
+    # 删除 release
     tiller_ins.uninstall_release(release_name)
-    # get release history
+
+    # 获得 release 版本历史 
     tiller_ins.get_history(name, max=MAX_HISTORY)
-    # rollback release 
+
+    # 回滚 release 
     tiller_ins.rollback_release(name, version, timeout=REQUEST_TIMEOUT)

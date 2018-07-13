@@ -12,15 +12,17 @@ The helm gRPC libraries are located in the hapi directory.
 They were generated with the grpc_tools.protoc utility against Helm 2.9.1.
 Should you wish to re-generate them you can easily do so:
 
-# grpc python协议文件生成
-#git clone https://github.com/kubernetes/helm ./helm
-#python -m grpc_tools.protoc -I helm/_proto --python_out=. --grpc_python_out=. ./helm/_proto/hapi/chart/*
-#python -m grpc_tools.protoc -I helm/_proto --python_out=. --grpc_python_out=. ./helm/_proto/hapi/services/*
-#python -m grpc_tools.protoc -I helm/_proto --python_out=. --grpc_python_out=. ./helm/_proto/hapi/release/*
-#python -m grpc_tools.protoc -I helm/_proto --python_out=. --grpc_python_out=. ./helm/_proto/hapi/version/*
+grpc python协议文件生成
 
-# 查看生成的文件
-#ls ./hapi
+git clone https://github.com/kubernetes/helm ./helm
+python -m grpc_tools.protoc -I helm/_proto --python_out=. --grpc_python_out=. ./helm/_proto/hapi/chart/*
+python -m grpc_tools.protoc -I helm/_proto --python_out=. --grpc_python_out=. ./helm/_proto/hapi/services/*
+python -m grpc_tools.protoc -I helm/_proto --python_out=. --grpc_python_out=. ./helm/_proto/hapi/release/*
+python -m grpc_tools.protoc -I helm/_proto --python_out=. --grpc_python_out=. ./helm/_proto/hapi/version/*
+
+查看生成的文件
+
+ls ./hapi
 total 0
 drwxr-xr-x 2 root root 200 Jul  9 16:47 chart
 drwxr-xr-x 2 root root 294 Jul  9 16:47 release
@@ -32,7 +34,7 @@ drwxr-xr-x 2 root root  55 Jul  9 16:47 version
 How to use
 -----------------
 
-1. First you need repo_url and chart name to download chart:
+1. First you need repo_url and chart name to download chart::
 
     from pyhelm.repo import RepoUtils 
 
@@ -42,7 +44,7 @@ How to use
     "/tmp/pyhelm-kibwtj8d/mongodb"
 
 
-2. Next step to build ChartBuilder instance to manipulate with Tiller:
+2. Next step to build ChartBuilder instance to manipulate with Tiller::
 
     from pyhelm.chartbuilder import ChartBuilder
 
@@ -56,7 +58,7 @@ How to use
     description: "Chart for MongoDB"
 
 
-3. Install chart:
+3. Install chart::
 
     from pyhelm.chartbuilder import ChartBuilder
     from pyhelm.tiller import Tiller

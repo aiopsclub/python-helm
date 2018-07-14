@@ -35,11 +35,11 @@ grpc python协议文件生成
 
 \# ls ./hapi
 \# total 0   
-\# drwxr-xr-x 2 root root 200 Jul 9 16:47 chart
+\# drwxr-xr-x 2 root root 200 Jul 9 16:47 chart  
 \# drwxr-xr-x 2 root root 294 Jul 9 16:47 release  
 \# drwxr-xr-x 2 root root 53 Jul 9 16:47 rudder  
-\# drwxr-xr-x 2 root root 53 Jul 9 16:47 services
-\# drwxr-xr-x 2 root root 55 Jul 9 16:47 version
+\# drwxr-xr-x 2 root root 53 Jul 9 16:47 services  
+\# drwxr-xr-x 2 root root 55 Jul 9 16:47 version  
 
 **How to use it** 
 --

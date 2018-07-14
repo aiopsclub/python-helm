@@ -2,6 +2,8 @@
 
 **python-helm** is a helm client for python.
 
+1. [功能](#功能)
+
 ## 功能 ##
 
 **python-helm** 可以实现对Tiller的访问

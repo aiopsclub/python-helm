@@ -1,6 +1,6 @@
 **Welcome to python-helm**
 
-<img width="75" height="75" src="https://helm.sh/assets/images/helm-logo.svg"/><img width="75" height="75" src="https://docs.python.org/3/_static/py.png"/><img width="75" height="75" src="https://github.com/kubernetes/kubernetes/raw/master/logo/logo.png"/>
+<img width="75" height="75" src="https://helm.sh/assets/images/helm-logo.svg"/><img width="75" height="75" src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1531566002702&di=956559d632d62b7fc6af73fcbccdba6d&imgtype=0&src=http%3A%2F%2Fp0.ifengimg.com%2Fpmop%2F2017%2F0922%2FA881DF2A34EA41CA1557935BC532E2D7F4A5E6AC_size11_w250_h250.jpeg"/><img width="75" height="75" src="https://github.com/kubernetes/kubernetes/raw/master/logo/logo.png"/>
 
 **python-helm** is a helm client for python.  
 **目录：**

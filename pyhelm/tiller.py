@@ -128,46 +128,6 @@ class Tiller(object):
                 continue
         return charts
 
-    def _pre_update_actions(self, actions, namespace):
-        '''
-        :params actions - array of items actions
-        :params namespace - name of pod for actions
-        '''
-        try:
-            for action in actions.get('delete', []):
-                name = action.get("name")
-                action_type = action.get("type")
-                if "job" in action_type:
-                    LOG.info("Deleting %s in namespace: %s", name, namespace)
-                    self.k8s.delete_job_action(name, namespace)
-                    continue
-                LOG.error("Unable to execute name: %s type: %s ", name, type)
-        except Exception:
-            LOG.debug("PRE: Could not delete anything, please check yaml")
-
-        try:
-            for action in actions.get('create', []):
-                name = action.get("name")
-                action_type = action.get("type")
-                if "job" in action_type:
-                    LOG.info("Creating %s in namespace: %s", name, namespace)
-                    self.k8s.create_job_action(name, action_type)
-                    continue
-        except Exception:
-            LOG.debug("PRE: Could not create anything, please check yaml")
-
-    def _post_update_actions(self, actions, namespace):
-        try:
-            for action in actions.get('create', []):
-                name = action.get("name")
-                action_type = action.get("type")
-                if "job" in action_type:
-                    LOG.info("Creating %s in namespace: %s", name, namespace)
-                    self.k8s.create_job_action(name, action_type)
-                    continue
-        except Exception:
-            LOG.debug("POST: Could not create anything, please check yaml")
-
     def update_release(self, chart, dry_run=False, name=None,
                        disable_hooks=False, values=None, recreate=False,
                        reset_values=False, reuse_values=False, force=False,
@@ -177,7 +137,6 @@ class Tiller(object):
         '''
 
         #values = Config(raw=yaml.safe_dump(values or {}))
-        #self._pre_update_actions(pre_actions, namespace)
 
         # build update release request
         stub = ReleaseServiceStub(self.channel)
@@ -269,7 +228,7 @@ class Tiller(object):
         :params - cleanup(bool) - delete test pods upon completion
         usage: RunReleaseTest executes the tests defined of a named release
         """
-        # build  ReleaseTest request
+        # build  releaseTest request
         stub = ReleaseServiceStub(self.channel)
         test_release_request = TestReleaseRequest(name=name,
                                                   cleanup=cleanup)

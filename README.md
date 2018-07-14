@@ -15,7 +15,7 @@
 - 测试 
 - 获取版本历史 
 
-##该项目主要依赖于官方的hapi的grpc接口##
+##该项目主要依赖于官方的hapi的grpc接口##  
 helm grpc 生成方式：  
 
 The helm gRPC libraries are located in the hapi directory.  

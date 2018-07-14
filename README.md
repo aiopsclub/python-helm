@@ -5,7 +5,7 @@
 1. [功能介绍](#功能)
 2. [Tiller控制列表](#Tiller控制)  
 3. [grpc接口生成](#该项目主要依赖于官方的hapi的grpc接口)   
-4. [使用方法](#How to use it)  
+4. [使用方法](#How-to-use-it)  
 ## 功能 ##
 
 **python-helm** 可以实现对Tiller的访问

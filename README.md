@@ -1,4 +1,4 @@
-![helm](<img width="150" height="150" src="https://helm.sh/assets/images/helm-logo.svg"/>)  
+<img width="150" height="150" src="https://helm.sh/assets/images/helm-logo.svg"/>
 ## Welcome to python-helm ###
 
 **python-helm** is a helm client for python.  

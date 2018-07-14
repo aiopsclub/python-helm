@@ -1,5 +1,4 @@
-<img width="75" height="75" src="https://helm.sh/assets/images/helm-logo.svg"/>
-<img width="200" height="75" src="https://www.python.org/static/img/python-logo@2x.png"/>
+<img width="75" height="75" src="https://helm.sh/assets/images/helm-logo.svg"/><img width="200" height="75" src="https://www.python.org/static/img/python-logo@2x.png"/>
 
 **Welcome to python-helm**  
 

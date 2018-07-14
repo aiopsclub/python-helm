@@ -1,4 +1,5 @@
 **Welcome to python-helm**
+---
 
 <img width="75" height="75" src="https://helm.sh/assets/images/helm-logo.svg"/><img width="150" height="75" src="https://www.python.org/static/community_logos/python-logo.png"/><img width="75" height="75" src="https://github.com/kubernetes/kubernetes/raw/master/logo/logo.png"/>
 

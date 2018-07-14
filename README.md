@@ -15,7 +15,8 @@
 - 测试 
 - 获取版本历史 
 
-##该项目主要依赖于官方的hapi的grpc接口##  
+**该项目主要依赖于官方的hapi的grpc接口** 
+--
 helm grpc 生成方式：  
 
 The helm gRPC libraries are located in the hapi directory.  
@@ -40,8 +41,8 @@ grpc python协议文件生成
 \# drwxr-xr-x 2 root root 53 Jul 9 16:47 services
 \# drwxr-xr-x 2 root root 55 Jul 9 16:47 version
 
-##How to use it ##
-
+**How to use it** 
+--
 1. First you need repo_url and chart name to download chart:  
    \# from pyhelm.repo import RepoUtils  
    \# chart_path = from_repo('https://kubernetes-charts.storage.googleapis.com/', 'mariadb')  

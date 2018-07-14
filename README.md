@@ -1,6 +1,6 @@
 ## Welcome to python-helm ###
 
-**python-helm** is a helm client for python.
+**python-helm** is a helm client for python.  
 **目录：**
    1. [功能介绍](#功能)
    2. [Tiller控制列表](#tiller控制)  

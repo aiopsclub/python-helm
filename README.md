@@ -1,4 +1,4 @@
-<img width="150" height="150" src="https://helm.sh/assets/images/helm-logo.svg"/>
+<img width="75" height="75" src="https://helm.sh/assets/images/helm-logo.svg"/>
 
 **Welcome to python-helm**  
 

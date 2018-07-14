@@ -44,10 +44,10 @@ grpc python协议文件生成
 **How to use it** 
 --
 1. First you need repo_url and chart name to download chart:  
-   \# from pyhelm.repo import RepoUtils  
-   \# chart_path = from_repo('https://kubernetes-charts.storage.googleapis.com/', 'mariadb')  
-   \# print(chart_path)  
-   \# "/tmp/pyhelm-kibwtj8d/mongodb"  
+	\# from pyhelm.repo import RepoUtils  
+	\# chart_path = from_repo('https://kubernetes-charts.storage.googleapis.com/', 'mariadb')  
+	\# print(chart_path)  
+	\# "/tmp/pyhelm-kibwtj8d/mongodb"  
 
 2. Next step to build ChartBuilder instance to manipulate with Tiller.  
    \# from pyhelm.chartbuilder import ChartBuilder  

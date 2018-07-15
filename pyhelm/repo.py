@@ -10,7 +10,7 @@ import tarfile
 import tempfile
 import yaml
 
-from .utils.exceptions import CustomError
+from utils.exceptions import CustomError
 
 
 class RepoUtils(object):

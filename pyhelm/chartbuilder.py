@@ -4,14 +4,13 @@
 import logging
 import os
 import yaml
-
 from hapi.chart.template_pb2 import Template
 from hapi.chart.chart_pb2 import Chart
 from hapi.chart.metadata_pb2 import Metadata
 from hapi.chart.config_pb2 import Config
 from supermutes.dot import dotify
-from utils.exceptions import CustomError
-from repo import RepoUtils
+from .utils.exceptions import CustomError
+from .repo import RepoUtils
 
 LOG = logging.getLogger('pyhelm')
 

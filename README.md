@@ -9,6 +9,7 @@
    2. [Tiller控制列表](#tiller控制)  
    3. [grpc接口生成](#该项目主要依赖于官方的hapi的grpc接口)   
    4. [使用方法](#how-to-use-it)  
+   5. [函数文档](https://github.com/yxxhero/python-helm/tree/master/doc)
 ## 功能 ##
 
 **python-helm** 可以实现对Tiller的访问

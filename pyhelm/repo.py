@@ -1,3 +1,8 @@
+#-*- coding:utf-8 -*-
+"""
+repo 包含repo处理的简单函数,包括返回chart版本列表
+chart名称列表以及根据字符搜索chart等功能
+"""
 try:
     from StringIO import StringIO
 except ImportError:
@@ -12,7 +17,7 @@ import yaml
 
 from utils.exceptions import CustomError
 
-
+__all__ = ["RepoUtils", "repo_chart", "repo_search", "chart_versions", "repo_index", "from_repo", "git_clone", "source_cleanup"]
 class RepoUtils(object):
     """Utils for repo control
     
@@ -89,7 +94,19 @@ class RepoUtils(object):
 
     @staticmethod
     def from_repo(repo_url, chart, version=None, timeout=3):
-        """Downloads the chart from a repo."""
+        """Downloads the chart from a repo.
+
+        返回下载并解压后的chart目录 
+        
+        Args:
+            repo_url: repo的链接(str)
+            chart: chart名称(str)
+            version: chart版本(str)
+            timeout: 请求超时时间(int)
+
+        Returns:
+            返回下载并解压后的chart目录 
+        """
         _tmp_dir = tempfile.mkdtemp(prefix='pyhelm-', dir='/tmp')
         index = RepoUtils.repo_index(repo_url)
 
@@ -139,3 +156,8 @@ class RepoUtils(object):
         Returns:
         """
         shutil.rmtree(os.path.split(target_dir)[0])
+
+if __name__ == "__main__":
+
+    import repo
+    print(help(repo))

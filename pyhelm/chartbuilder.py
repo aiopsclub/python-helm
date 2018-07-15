@@ -1,3 +1,6 @@
+# -*- coding:utf-8 -*-
+"""class ChartBuilder 主要功能是生成tiller所需的chart元数据"""
+
 import logging
 import os
 import yaml
@@ -12,7 +15,9 @@ from repo import RepoUtils
 
 LOG = logging.getLogger('pyhelm')
 
-
+__all__ = ["ChartBuilder", "coalesceTables", "pathtomap", "generate_values",
+            "source_clone", "source_cleanup", "get_metadata", "get_files", "get_values"
+            "get_templates", "get_dependencies", "get_helm_chart", "dump"]
 class ChartBuilder(object):
     '''
     This class handles taking chart intentions as a paramter and
@@ -94,7 +99,10 @@ class ChartBuilder(object):
 
     # 生成对应的value参数
     @staticmethod
-    def generate_values(valuesfile="", values={}):
+    def generate_values(valuesfile="", values=None):
+
+        if values is None:
+            values = {}
         if len(valuesfile):
             base_values = yaml.safe_load(valuesfile)
         else:
@@ -189,8 +197,7 @@ class ChartBuilder(object):
         templates = []
         if not os.path.exists(os.path.join(self.source_directory,
                                            'templates')):
-            LOG.warn("Chart %s has no templates directory,"
-                     "no templates will be deployed", self.chart.name)
+            pass
         for root, _, files in os.walk(os.path.join(self.source_directory,
                                                    'templates'), topdown=True):
             for tpl_file in files:
@@ -253,3 +260,7 @@ class ChartBuilder(object):
         It should recurse into dependencies
         '''
         return self.get_helm_chart().SerializeToString()
+
+if __name__ == "__main__":
+    import chartbuilder 
+    print(help(chartbuilder))

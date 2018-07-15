@@ -17,25 +17,29 @@ LOG = logging.getLogger('pyhelm')
 __all__ = ["ChartBuilder", "coalesceTables", "pathtomap", "generate_values",
             "source_clone", "source_cleanup", "get_metadata", "get_files", "get_values"
             "get_templates", "get_dependencies", "get_helm_chart", "dump"]
+
 class ChartBuilder(object):
-    '''
+    """ 
     This class handles taking chart intentions as a paramter and
     turning those into proper protoc helm charts that can be
     pushed to tiller.
 
     It also processes chart source declarations, fetching chart
     source from external resources where necessary
-    '''
+    """ 
 
     def __init__(self, chart):
-        '''
-        Initialize the ChartBuilder class
+        """构造函数,目的是生成tiller所需的chart数据
+        Args:
+            chart: chart的信息字典
+        Return:
+            无返回值
+        注意chart的格式(dict):
+            1. {'name': 'mongodb', 'source': {'type': 'directory', 'location': '/tmp/pyhelm-kibwtj8d/mongodb'}}
+            2. {'name': 'mongodb', 'source': {'type': 'repo', 'version':'0.0.0', 'location': 'http://test.com/charts'}}
+        使用第二种格式必须制定version(推荐使用2).
 
-        Note that tthis will trigger a source pull as part of
-        initialization as its necessary in order to examine
-        the source service many of the calls on ChartBuilder
-        '''
-
+        """
         # cache for generated protoc chart object
         self._helm_chart = None
 
@@ -51,9 +55,18 @@ class ChartBuilder(object):
     def __repr__(self):
         pass
 
-    # 合并字典,将src的中的键值整合到dst中
     @staticmethod
     def coalesceTables(dst, src):
+
+        """合并字典,将src的中的键值整合到dst中
+        工具函数
+        Args:
+            dst: 目标字典
+            src: 源字典
+
+        ReturnS:
+            合并后的字典
+        """
         for key, val in src.items():
             if isinstance(val, dict):
                 if key not in dst.keys():
@@ -73,10 +86,18 @@ class ChartBuilder(object):
                     continue
         return dst
 
-    # 根据path生成对应的字典结构结构:
-    # example: server.port = 80 result: {"server":{"port": 80}}
     @staticmethod
     def pathtomap(path, data):
+
+        """根据path生成对应的字典结构结构
+           example: server.port = 80 result: {"server":{"port": 80}}
+        Args:
+            path: server.port(str)
+            data: 80 
+        Return:
+            返回生成的字典
+        """
+
         if path == ".":
             return data
         ap = path.split(".")
@@ -96,9 +117,17 @@ class ChartBuilder(object):
             i += 1
         return n[0]
 
-    # 生成对应的value参数
     @staticmethod
     def generate_values(valuesfile="", values=None):
+        """生成对应的value参数,以便在tiller升级和安装过程中替换值
+        Args:
+            valuesfile: yaml格式的数据(包括"\n")(str)
+            valuesfile: 默认None,可接受的类型为dict
+
+        Returns:
+            返回tiller可接受的config对象
+        """
+    
 
         if values is None:
             values = {}
@@ -116,14 +145,13 @@ class ChartBuilder(object):
             return Config(raw="")
 
     def source_clone(self):
+        '''Clone the charts source
+        Args:
+            无参数
+        Returns:
+            返回chart的文件所在目录
         '''
-        Clone the charts source
 
-        We only support a git source type right now, which can also
-        handle git:// local paths as well
-        '''
-
-        subpath = self.chart.source.get('subpath', '')
 
         if not 'type' in self.chart.source:
             raise CustomError("Need source type for chart {}".format(self.chart.name)) 
@@ -138,17 +166,22 @@ class ChartBuilder(object):
         else:
             raise CustomError("Unknown source type {} for chart {}".format(self.chart.source.type, self.chart.name)) 
 
-        return os.path.join(self._source_tmp_dir, subpath)
+        return os.path.join(self._source_tmp_dir)
 
     def source_cleanup(self):
-        '''
-        Cleanup source
+        '''Cleanup source
+
+        清理临时的chart文件目录
         '''
         RepoUtils.source_cleanup(self._source_tmp_dir)
 
     def get_metadata(self):
-        '''
-        Process metadata
+        '''Process metadata
+        获取chart的metadata数据
+        Args:
+
+        Returns:
+            返回tiller所需的metadata对象
         '''
         # extract Chart.yaml to construct metadata
         chart_yaml = dotify(yaml.load(open(
@@ -164,6 +197,10 @@ class ChartBuilder(object):
     def get_files(self):
         '''
         Return (non-template) files in this chart
+        Args:
+
+        Returns:
+            返回tiller所需的文件对象列表(暂未实现) 
 
         TODO(alanmeadows): Not implemented
         '''
@@ -172,6 +209,11 @@ class ChartBuilder(object):
     def get_values(self):
         '''
         Return the chart (default) values
+        获取chart的values数据
+        Args:
+
+        Returns:
+            返回tiller所需的values对象
         '''
 
         # create config object representing unmarshaled values.yaml
@@ -179,8 +221,6 @@ class ChartBuilder(object):
             raw_values = open(os.path.join(self.source_directory,
                                            'values.yaml')).read()
         else:
-            LOG.warn("No values.yaml in %s, using empty values",
-                     self.source_directory)
             raw_values = ''
 
         return Config(raw=raw_values)
@@ -188,8 +228,12 @@ class ChartBuilder(object):
     def get_templates(self):
         '''
         Return all the chart templates
-        '''
+        获取chart的templates数据
+        Args:
 
+        Returns:
+            返回tiller所需的templates对象
+        '''
         # process all files in templates/ as a template to attach to the chart
         # building a Template object
         #import ipdb; ipdb.set_trace()
@@ -212,7 +256,11 @@ class ChartBuilder(object):
 
     def get_dependencies(self):
         """
-        Return chart dependencies
+        获取chart的dependecies数据
+        Args:
+
+        Returns:
+            返回tiller所需的dependcies对象
         """
         dependencies = []
         if os.path.exists(os.path.join(self.source_directory, "requirements.yaml")):
@@ -234,6 +282,11 @@ class ChartBuilder(object):
     def get_helm_chart(self):
         '''
         Return a helm chart object
+        获取tiller所需的chart数据
+        Args:
+
+        Returns:
+            返回tiller所需的chart对象
         '''
 
         if self._helm_chart:
@@ -253,9 +306,9 @@ class ChartBuilder(object):
 
     def dump(self):
         '''
+        序列化chart对象
         This method is used to dump a chart object as a
         serialized string so that we can perform a diff
-
         It should recurse into dependencies
         '''
         return self.get_helm_chart().SerializeToString()

@@ -1,0 +1,151 @@
+Help on module pyhelm.chartbuilder in pyhelm:
+
+NAME
+    pyhelm.chartbuilder - class ChartBuilder 主要功能是生成tiller所需的chart元数据
+
+CLASSES
+    builtins.object
+        ChartBuilder
+    
+    class ChartBuilder(builtins.object)
+     |  This class handles taking chart intentions as a paramter and
+     |  turning those into proper protoc helm charts that can be
+     |  pushed to tiller.
+     |  
+     |  It also processes chart source declarations, fetching chart
+     |  source from external resources where necessary
+     |  
+     |  Methods defined here:
+     |  
+     |  __init__(self, chart)
+     |      构造函数,目的是生成tiller所需的chart数据
+     |      Args:
+     |          chart: chart的信息字典
+     |      Return:
+     |          无返回值
+     |      注意chart的格式(dict):
+     |          1. {'name': 'mongodb', 'source': {'type': 'directory', 'location': '/tmp/pyhelm-kibwtj8d/mongodb'}}
+     |          2. {'name': 'mongodb', 'source': {'type': 'repo', 'version':'0.0.0', 'location': 'http://test.com/charts'}}
+     |      使用第二种格式必须制定version(推荐使用2).
+     |  
+     |  __repr__(self)
+     |      Return repr(self).
+     |  
+     |  __str__(self)
+     |      Return str(self).
+     |  
+     |  dump(self)
+     |      序列化chart对象
+     |      This method is used to dump a chart object as a
+     |      serialized string so that we can perform a diff
+     |      It should recurse into dependencies
+     |  
+     |  get_dependencies(self)
+     |      获取chart的dependecies数据
+     |      Args:
+     |      
+     |      Returns:
+     |          返回tiller所需的dependcies对象
+     |  
+     |  get_files(self)
+     |      Return (non-template) files in this chart
+     |      Args:
+     |      
+     |      Returns:
+     |          返回tiller所需的文件对象列表(暂未实现) 
+     |      
+     |      TODO(alanmeadows): Not implemented
+     |  
+     |  get_helm_chart(self)
+     |      Return a helm chart object
+     |      获取tiller所需的chart数据
+     |      Args:
+     |      
+     |      Returns:
+     |          返回tiller所需的chart对象
+     |  
+     |  get_metadata(self)
+     |      Process metadata
+     |      获取chart的metadata数据
+     |      Args:
+     |      
+     |      Returns:
+     |          返回tiller所需的metadata对象
+     |  
+     |  get_templates(self)
+     |      Return all the chart templates
+     |      获取chart的templates数据
+     |      Args:
+     |      
+     |      Returns:
+     |          返回tiller所需的templates对象
+     |  
+     |  get_values(self)
+     |      Return the chart (default) values
+     |      获取chart的values数据
+     |      Args:
+     |      
+     |      Returns:
+     |          返回tiller所需的values对象
+     |  
+     |  source_cleanup(self)
+     |      Cleanup source
+     |      
+     |      清理临时的chart文件目录
+     |  
+     |  source_clone(self)
+     |      Clone the charts source
+     |      Args:
+     |          无参数
+     |      Returns:
+     |          返回chart的文件所在目录
+     |  
+     |  ----------------------------------------------------------------------
+     |  Static methods defined here:
+     |  
+     |  coalesceTables(dst, src)
+     |      合并字典,将src的中的键值整合到dst中
+     |      工具函数
+     |      Args:
+     |          dst: 目标字典
+     |          src: 源字典
+     |      
+     |      ReturnS:
+     |          合并后的字典
+     |  
+     |  generate_values(valuesfile='', values=None)
+     |      生成对应的value参数,以便在tiller升级和安装过程中替换值
+     |              Args:
+     |                  valuesfile: yaml格式的数据(包括"
+     |      ")(str)
+     |                  valuesfile: 默认None,可接受的类型为dict
+     |      
+     |              Returns:
+     |                  返回tiller可接受的config对象
+     |  
+     |  pathtomap(path, data)
+     |      根据path生成对应的字典结构结构
+     |         example: server.port = 80 result: {"server":{"port": 80}}
+     |      Args:
+     |          path: server.port(str)
+     |          data: 80 
+     |      Return:
+     |          返回生成的字典
+     |  
+     |  ----------------------------------------------------------------------
+     |  Data descriptors defined here:
+     |  
+     |  __dict__
+     |      dictionary for instance variables (if defined)
+     |  
+     |  __weakref__
+     |      list of weak references to the object (if defined)
+
+DATA
+    __all__ = ['ChartBuilder', 'coalesceTables', 'pathtomap', 'generate_va...
+
+FILE
+    /opt/python-helm/pyhelm/chartbuilder.py
+
+
+None

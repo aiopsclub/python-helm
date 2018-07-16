@@ -1,3 +1,5 @@
+i#-*- coding:utf-8 -*-
+""" Tiller class 注意包含对tiller的控制函数"""
 import grpc
 import logging
 
@@ -17,14 +19,24 @@ MAX_HISTORY = 64
 
 class Tiller(object):
     '''
-    The Tiller class supports communication and requests to the Tiller Helm
-    service over gRPC
+    Tiller class 通过grpc协议与tiller进行交流.
     '''
 
     def __init__(self, host, port=44134, ssl_verification=False,
                  root_certificates=None, cert_key=None,
                  cert_cert=None, ssl_target_name_override='tiller-server'):
-        """注意ssl_target_name_override参数,必须和tiller端证书的common name一致,否则会提示无法链接
+        """Tiller Class 构造函数
+        Args:
+            host: Tiller host(str) 
+            port: Tiller port(int)
+            ssl_verification: 是否开启加密模式(bool) default(False)
+            root_certificates: 根证书路径(str)
+            cert_key: 客户端key
+            cert_cert: 客户端证书
+            ssl_target_name_override: 必须和tiller端证书的common name一致
+        Returns:
+            无返回值    
+        注意ssl_target_name_override参数,必须和tiller端证书的common name一致,否则会提示无法链接
         """
         # init k8s connectivity
         self._host = host
@@ -46,13 +58,21 @@ class Tiller(object):
     @property
     def metadata(self):
         '''
-        Return tiller metadata for requests
+        Args: 
+            无参数
+        Returns:
+            Return tiller metadata for requests
+
+        注意:TILLER_VERSION必须与实际版本一致
         '''
         return [(b'x-helm-api-client', TILLER_VERSION)]
 
     def get_channel(self):
         '''
-        Return a tiller channel
+        Args:
+            无参数
+        Return:
+            Return a tiller channel
         '''
         if self.ssl_verification:
             cert_key_file = None
@@ -71,8 +91,11 @@ class Tiller(object):
             return grpc.insecure_channel('%s:%s' % (self._host, self._port))
 
     def tiller_status(self):
-        '''
-        return if tiller exist or not
+        '''判断__init__中host参数是否已经配置.
+        Args:
+            无参数 
+        Returns:
+            return if tiller exist or not(bool)
         '''
         if self._host:
             return True
@@ -80,8 +103,11 @@ class Tiller(object):
         return False
 
     def get_release_content(self, name):
-        """
-        Release content
+        """获得具体release的内容
+        Args:
+            name: release名称
+        Returns:
+            Release content
         """
         stub = ReleaseServiceStub(self.channel)
         req = GetReleaseContentRequest(name=name)
@@ -90,6 +116,13 @@ class Tiller(object):
         return release_content
 
     def get_release_status(self, name):
+        """获得具体release的状态
+        Args:
+            name: release名称
+        Returns:
+            Release状态
+        """
+
         stub = ReleaseServiceStub(self.channel)
         req = GetReleaseStatusRequest(name=name)
         release_status = stub.GetReleaseStatus(req, self.timeout,
@@ -97,11 +130,16 @@ class Tiller(object):
         return release_status
 
     def list_releases(self, limit=RELEASE_LIMIT, status_codes=[], namespace=None):
-        '''
-        :params limit - number of result 
-        :params status_codes - status_codes list used for filter
-        :params namespace(srt) - k8s namespace 
-        List Helm Releases
+        '''获得release列表
+        Argss:
+            :params limit - number of result 
+            :params status_codes - status_codes list used for filter
+                可选值(UNKNOWN, DEPLOYED, DELETED, SUPERSEDED, FAILED,
+                       DELETING, PENDING_INSTALL, PENDING_UPGRADE,
+                       PENDING_ROLLBACK)
+            :params namespace(srt) - k8s namespace 
+        Returns:
+            List Helm Releases
         '''
         releases = []
         stub = ReleaseServiceStub(self.channel)
@@ -115,8 +153,10 @@ class Tiller(object):
     def list_charts(self):
         '''
         List Helm Charts from Latest Releases
-
-        Returns list of (name, version, chart, values)
+        Args:
+            无参数
+        Return:
+            list of (name, version, chart, values)
         '''
         charts = []
         for latest_release in self.list_releases():
@@ -155,7 +195,6 @@ class Tiller(object):
         return stub.UpdateRelease(release_request, self.timeout,
                                   metadata=self.metadata)
 
-        #self._post_update_actions(post_actions, namespace)
 
     def install_release(self, chart, namespace, disable_hooks=False,
                         reuse_name=False, disable_crd_hook=False,

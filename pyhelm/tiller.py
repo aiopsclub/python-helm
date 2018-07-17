@@ -1,5 +1,6 @@
-#-*- coding:utf-8 -*-
+# -*- coding:utf-8 -*-
 """ Tiller class 注意包含对tiller的控制函数"""
+
 import grpc
 import logging
 
@@ -86,7 +87,9 @@ class Tiller(object):
                 with open(self.cert_cert, 'rb') as f:
                     cert_cert_file = f.read()
             creds = grpc.ssl_channel_credentials(ca_cert_file, cert_key_file, cert_cert_file)
-            return grpc.secure_channel(self._host + ":" + self._port, creds, options=(('grpc.ssl_target_name_override', self.ssl_target_name_override,),))
+            return grpc.secure_channel(self._host + ":" + self._port, creds, 
+                                       options=(('grpc.ssl_target_name_override',
+                                       self.ssl_target_name_override,),))
         else:
             return grpc.insecure_channel('%s:%s' % (self._host, self._port))
 
@@ -168,13 +171,24 @@ class Tiller(object):
                 continue
         return charts
 
-    def update_release(self, chart, dry_run=False, name=None,
+    def update_release(self, chart, name, dry_run=False,
                        disable_hooks=False, values=None, recreate=False,
                        reset_values=False, reuse_values=False, force=False,
                        timeout=REQUEST_TIMEOUT):
-        '''
-        Update a Helm Release
-        '''
+        """升级release
+        Args:
+            :params - chart - chart 元数据,由函数生成 
+            :params - name - release name
+            :params - dry_run - simulate an upgrade 
+            :params - values - 额外的values,用来进行value值替换 
+            :params - disable_hooks - prevent hooks from running during rollback
+            :params - recreate - performs pods restart for the resource if applicable 
+            :params - reset_values - when upgrading, reset the values to the ones built into the chart 
+            :params - reuse_values - when upgrading, reuse the last release's values and merge in any overrides from the command line via --set and -f. If '--reset-values' is specified, this is ignored. 
+            :params - force - 是否强制升级(bool)
+        Returns:
+            返回升级release的grpc响应
+        """
 
         #values = Config(raw=yaml.safe_dump(values or {}))
 
@@ -225,12 +239,15 @@ class Tiller(object):
     def rollback_release(self, name, version, timeout=REQUEST_TIMEOUT,
                          dry_run=False, disable_hooks=False,
                          recreate=False, wait=False, force=False):
-        """
-        :params - name - release name
-        :params - version - release version
-        :params - dry_run - simulate a rollback
-        :params - disable_hooks - prevent hooks from running during rollback
-        :params - recreate - performs pods restart for the resource if applicable
+        """回滚release
+        Args:
+            :params - name - release nam
+            :params - version - release version
+            :params - dry_run - simulate a rollback
+            :params - disable_hooks - prevent hooks from running during rollback
+            :params - recreate - performs pods restart for the resource if applicable
+        Returns:
+            返回回滚release的grpc响应
         """
         # build rollback release request
         stub = ReleaseServiceStub(self.channel)

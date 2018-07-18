@@ -17,7 +17,10 @@ REQUEST_TIMEOUT = 5
 RELEASE_LIMIT = 0
 MAX_HISTORY = 64
 
-
+__all__ = ["Tiller", "metadata", "get_channel", "tiller_status", "get_release_content",
+           "get_release_status", "list_releases", "list_charts", "update_release",
+           "install_release", "rollback_release", "get_history", "test_release",
+           "uninstall_release", "get_version", "chart_cleanup"]
 class Tiller(object):
     '''
     Tiller class 通过grpc协议与tiller进行交流.
@@ -28,7 +31,7 @@ class Tiller(object):
                  cert_cert=None, ssl_target_name_override='tiller-server'):
         """Tiller Class 构造函数
         Args:
-            host: Tiller host(str) 
+            host: Tiller host(str)
             port: Tiller port(int)
             ssl_verification: 是否开启加密模式(bool) default(False)
             root_certificates: 根证书路径(str)
@@ -36,7 +39,7 @@ class Tiller(object):
             cert_cert: 客户端证书
             ssl_target_name_override: 必须和tiller端证书的common name一致
         Returns:
-            无返回值    
+            无返回值
         注意ssl_target_name_override参数,必须和tiller端证书的common name一致,否则会提示无法链接
         """
         # init k8s connectivity
@@ -59,7 +62,7 @@ class Tiller(object):
     @property
     def metadata(self):
         '''
-        Args: 
+        Args:
             无参数
         Returns:
             Return tiller metadata for requests
@@ -96,7 +99,7 @@ class Tiller(object):
     def tiller_status(self):
         '''判断__init__中host参数是否已经配置.
         Args:
-            无参数 
+            无参数
         Returns:
             return if tiller exist or not(bool)
         '''
@@ -135,12 +138,12 @@ class Tiller(object):
     def list_releases(self, limit=RELEASE_LIMIT, status_codes=[], namespace=None):
         '''获得release列表
         Argss:
-            :params limit - number of result 
+            :params limit - number of result
             :params status_codes - status_codes list used for filter
                 可选值(UNKNOWN, DEPLOYED, DELETED, SUPERSEDED, FAILED,
                        DELETING, PENDING_INSTALL, PENDING_UPGRADE,
                        PENDING_ROLLBACK)
-            :params namespace(srt) - k8s namespace 
+            :params namespace(srt) - k8s namespace
         Returns:
             List Helm Releases
         '''
@@ -177,17 +180,17 @@ class Tiller(object):
                        timeout=REQUEST_TIMEOUT):
         """升级release
         Args:
-            :params - chart - chart 元数据,由函数生成 
+            :params - chart - chart 元数据,由函数生成
             :params - name - release name
-            :params - dry_run - simulate an upgrade 
-            :params - values - 额外的values,用来进行value值替换 
-            :params - disable_hooks - prevent hooks from running during rollback
-            :params - recreate - performs pods restart for the resource if applicable 
-            :params - reset_values - when upgrading, reset the values to the ones built into the chart 
-            :params - reuse_values - when upgrading, reuse the last release's values and merge in any overrides from the command line via --set and -f. If '--reset-values' is specified, this is ignored. 
+            :params - dry_run - simulate an upgrade
+            :params - values - 额外的values,用来进行value值替换
+            :params - disable_hooks - prevent hooks from running during rollback(bool)
+            :params - recreate - performs pods restart for the resource if applicable(bool)
+            :params - reset_values - when upgrading, reset the values to the ones built into the chart(bool)
+            :params - reuse_values - when upgrading, reuse the last release's values and merge in any overrides from the command line via --set and -f. If '--reset-values' is specified, this is ignored.(bool)
             :params - force - 是否强制升级(bool)
         Returns:
-            返回升级release的grpc响应
+            返回升级release的grpc响应对象
         """
 
         #values = Config(raw=yaml.safe_dump(values or {}))
@@ -209,13 +212,23 @@ class Tiller(object):
         return stub.UpdateRelease(release_request, self.timeout,
                                   metadata=self.metadata)
 
-
     def install_release(self, chart, namespace, disable_hooks=False,
                         reuse_name=False, disable_crd_hook=False,
                         timeout=REQUEST_TIMEOUT, dry_run=False,
                         name=None, values=None):
-        """
-        Create a Helm Release
+        """安装release
+        Args:
+            :params - chart - chart 元数据,由函数生成
+            :params - name - release name,为空时随机生成
+            :params - namespace - kubernetes namespace 
+            :params - dry_run - simulate an install 
+            :params - values - 额外的values,用来进行value值替换
+            :params - disable_hooks - prevent hooks from running during install(bool)
+            :params - disable_crd_hook - prevent CRD hooks from running, but run other hooks(bool) 
+            :params - reuse_name - re-use the given name, even if that name is already used. This is unsafe in production(bool) 
+            :params - timeout - time in seconds to wait for any individual Kubernetes operation (like Jobs for hooks) (default 300) 
+        Returns:
+            返回安装release的grpc响应对象
         """
 
         #values = Config(raw=yaml.safe_dump(values or {}))
@@ -247,7 +260,7 @@ class Tiller(object):
             :params - disable_hooks - prevent hooks from running during rollback
             :params - recreate - performs pods restart for the resource if applicable
         Returns:
-            返回回滚release的grpc响应
+            返回回滚release的grpc响应对象
         """
         # build rollback release request
         stub = ReleaseServiceStub(self.channel)
@@ -265,10 +278,13 @@ class Tiller(object):
                                     metadata=self.metadata)
 
     def get_history(self, name, max=MAX_HISTORY):
-        """
-        :params - name(string) - release name
-        :params - max(int) - max items of release history
-        usage: ReleaseHistory retrieves a releasse's history
+        """usage: ReleaseHistory retrieves a releasse's history
+        Args:
+            :params - name(string) - release name
+            :params - max(int) - max items of release history
+        Return:
+            返回版本的历史的grpc响应对象
+
         """
         # build get history request
         stub = ReleaseServiceStub(self.channel)
@@ -279,10 +295,12 @@ class Tiller(object):
                                metadata=self.metadata)
 
     def test_release(self, name, cleanup=False, timeout=REQUEST_TIMEOUT):
-        """
-        :params - name(string) - release name
-        :params - cleanup(bool) - delete test pods upon completion
-        usage: RunReleaseTest executes the tests defined of a named release
+        """usage: RunReleaseTest executes the tests defined of a named release
+        Args:
+            :params - name(string) - release name
+            :params - cleanup(bool) - delete test pods upon completion
+        Returns:
+            返回测试安装的grpc响应对象
         """
         # build  releaseTest request
         stub = ReleaseServiceStub(self.channel)
@@ -294,11 +312,12 @@ class Tiller(object):
 
     def uninstall_release(self, release, timeout=REQUEST_TIMEOUT,
                           disable_hooks=False, purge=False):
-        """
-        :params - release - helm chart release name
-        :params - purge - deep delete of chart
-
-        deletes a helm chart from tiller
+        """deletes a helm chart from tiller
+        Args:
+            :params - release - helm chart release name
+            :params - purge - deep delete of chart
+        Returns:
+            返回卸载release的grpc响应对象
         """
 
         # build release install request
@@ -312,8 +331,11 @@ class Tiller(object):
                                      metadata=self.metadata)
 
     def get_version(self):
-        """
-        GetVersion returns the current version of the server
+        """GetVersion returns the current version of the server
+        Args:
+        
+        Returns:
+            返回tiller的版本grpc响应对象
         """
         # build get version request
         stub = ReleaseServiceStub(self.channel)
@@ -343,3 +365,7 @@ class Tiller(object):
             if chart.startswith(prefix):
                 LOG.debug("Release: %s will be removed", chart)
                 self.uninstall_release(chart)
+
+if __name__ == "__main__":
+    import tiller
+    print(help(tiller))

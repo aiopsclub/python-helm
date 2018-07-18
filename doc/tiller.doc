@@ -1,0 +1,177 @@
+Help on module pyhelm.tiller in pyhelm:
+
+NAME
+    pyhelm.tiller - Tiller class 注意包含对tiller的控制函数
+
+CLASSES
+    builtins.object
+        Tiller
+    
+    class Tiller(builtins.object)
+     |  Tiller class 通过grpc协议与tiller进行交流.
+     |  
+     |  Methods defined here:
+     |  
+     |  __init__(self, host, port=44134, ssl_verification=False, root_certificates=None, cert_key=None, cert_cert=None, ssl_target_name_override='tiller-server')
+     |      Tiller Class 构造函数
+     |      Args:
+     |          host: Tiller host(str)
+     |          port: Tiller port(int)
+     |          ssl_verification: 是否开启加密模式(bool) default(False)
+     |          root_certificates: 根证书路径(str)
+     |          cert_key: 客户端key
+     |          cert_cert: 客户端证书
+     |          ssl_target_name_override: 必须和tiller端证书的common name一致
+     |      Returns:
+     |          无返回值
+     |      注意ssl_target_name_override参数,必须和tiller端证书的common name一致,否则会提示无法链接
+     |  
+     |  chart_cleanup(self, prefix, charts)
+     |      :params charts - list of yaml charts
+     |      :params known_release - list of releases in tiller
+     |      
+     |      :result - will remove any chart that is not present in yaml
+     |  
+     |  get_channel(self)
+     |      Args:
+     |          无参数
+     |      Return:
+     |          Return a tiller channel
+     |  
+     |  get_history(self, name, max=64)
+     |      usage: ReleaseHistory retrieves a releasse's history
+     |      Args:
+     |          :params - name(string) - release name
+     |          :params - max(int) - max items of release history
+     |      Return:
+     |          返回版本的历史的grpc响应对象
+     |  
+     |  get_release_content(self, name)
+     |      获得具体release的内容
+     |      Args:
+     |          name: release名称
+     |      Returns:
+     |          Release content
+     |  
+     |  get_release_status(self, name)
+     |      获得具体release的状态
+     |      Args:
+     |          name: release名称
+     |      Returns:
+     |          Release状态
+     |  
+     |  get_version(self)
+     |      GetVersion returns the current version of the server
+     |      Args:
+     |      
+     |      Returns:
+     |          返回tiller的版本grpc响应对象
+     |  
+     |  install_release(self, chart, namespace, disable_hooks=False, reuse_name=False, disable_crd_hook=False, timeout=5, dry_run=False, name=None, values=None)
+     |      安装release
+     |      Args:
+     |          :params - chart - chart 元数据,由函数生成
+     |          :params - name - release name,为空时随机生成
+     |          :params - namespace - kubernetes namespace 
+     |          :params - dry_run - simulate an install 
+     |          :params - values - 额外的values,用来进行value值替换
+     |          :params - disable_hooks - prevent hooks from running during install(bool)
+     |          :params - disable_crd_hook - prevent CRD hooks from running, but run other hooks(bool) 
+     |          :params - reuse_name - re-use the given name, even if that name is already used. This is unsafe in production(bool) 
+     |          :params - timeout - time in seconds to wait for any individual Kubernetes operation (like Jobs for hooks) (default 300) 
+     |      Returns:
+     |          返回安装release的grpc响应对象
+     |  
+     |  list_charts(self)
+     |      List Helm Charts from Latest Releases
+     |      Args:
+     |          无参数
+     |      Return:
+     |          list of (name, version, chart, values)
+     |  
+     |  list_releases(self, limit=0, status_codes=[], namespace=None)
+     |      获得release列表
+     |      Argss:
+     |          :params limit - number of result
+     |          :params status_codes - status_codes list used for filter
+     |              可选值(UNKNOWN, DEPLOYED, DELETED, SUPERSEDED, FAILED,
+     |                     DELETING, PENDING_INSTALL, PENDING_UPGRADE,
+     |                     PENDING_ROLLBACK)
+     |          :params namespace(srt) - k8s namespace
+     |      Returns:
+     |          List Helm Releases
+     |  
+     |  rollback_release(self, name, version, timeout=5, dry_run=False, disable_hooks=False, recreate=False, wait=False, force=False)
+     |      回滚release
+     |      Args:
+     |          :params - name - release nam
+     |          :params - version - release version
+     |          :params - dry_run - simulate a rollback
+     |          :params - disable_hooks - prevent hooks from running during rollback
+     |          :params - recreate - performs pods restart for the resource if applicable
+     |      Returns:
+     |          返回回滚release的grpc响应对象
+     |  
+     |  test_release(self, name, cleanup=False, timeout=5)
+     |      usage: RunReleaseTest executes the tests defined of a named release
+     |      Args:
+     |          :params - name(string) - release name
+     |          :params - cleanup(bool) - delete test pods upon completion
+     |      Returns:
+     |          返回测试安装的grpc响应对象
+     |  
+     |  tiller_status(self)
+     |      判断__init__中host参数是否已经配置.
+     |      Args:
+     |          无参数
+     |      Returns:
+     |          return if tiller exist or not(bool)
+     |  
+     |  uninstall_release(self, release, timeout=5, disable_hooks=False, purge=False)
+     |      deletes a helm chart from tiller
+     |      Args:
+     |          :params - release - helm chart release name
+     |          :params - purge - deep delete of chart
+     |      Returns:
+     |          返回卸载release的grpc响应对象
+     |  
+     |  update_release(self, chart, name, dry_run=False, disable_hooks=False, values=None, recreate=False, reset_values=False, reuse_values=False, force=False, timeout=5)
+     |      升级release
+     |      Args:
+     |          :params - chart - chart 元数据,由函数生成
+     |          :params - name - release name
+     |          :params - dry_run - simulate an upgrade
+     |          :params - values - 额外的values,用来进行value值替换
+     |          :params - disable_hooks - prevent hooks from running during rollback(bool)
+     |          :params - recreate - performs pods restart for the resource if applicable(bool)
+     |          :params - reset_values - when upgrading, reset the values to the ones built into the chart(bool)
+     |          :params - reuse_values - when upgrading, reuse the last release's values and merge in any overrides from the command line via --set and -f. If '--reset-values' is specified, this is ignored.(bool)
+     |          :params - force - 是否强制升级(bool)
+     |      Returns:
+     |          返回升级release的grpc响应对象
+     |  
+     |  ----------------------------------------------------------------------
+     |  Data descriptors defined here:
+     |  
+     |  __dict__
+     |      dictionary for instance variables (if defined)
+     |  
+     |  __weakref__
+     |      list of weak references to the object (if defined)
+     |  
+     |  metadata
+     |      Args:
+     |          无参数
+     |      Returns:
+     |          Return tiller metadata for requests
+     |      
+     |      注意:TILLER_VERSION必须与实际版本一致
+
+DATA
+    __all__ = ['Tiller', 'metadata', 'get_channel', 'tiller_status', 'get_...
+
+FILE
+    /tmp/python-helm/pyhelm/tiller.py
+
+
+None

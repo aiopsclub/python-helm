@@ -6,6 +6,7 @@
 **python-helm** is a helm client for python.  
 
 **寄语**  
+--
 初次发布肯定有很多bug,希望有兴趣的同学和我一起完善  
 
 **TODO**  

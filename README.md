@@ -3,10 +3,14 @@
 
 <img width="75" height="75" src="https://helm.sh/assets/images/helm-logo.svg"/><img width="200" height="75" src="https://www.python.org/static/community_logos/python-logo.png"/><img width="75" height="75" src="https://github.com/kubernetes/kubernetes/raw/master/logo/logo.png"/>
 
-**python-helm** is a helm client for python. 
+**python-helm** is a helm client for python.  
+
+**寄语**  
+初次发布肯定有很多bug,希望有兴趣的同学和我一起完善  
 
 **TODO**  
 --  
+- 添加grpc对象序列化函数,便于处理
 - 基于vue构建简单管理前端  
 - 继续完善后端代码  
 

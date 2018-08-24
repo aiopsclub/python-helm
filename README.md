@@ -3,7 +3,7 @@
 
 <img width="75" height="75" src="https://helm.sh/assets/images/helm-logo.svg"/><img width="200" height="75" src="https://www.python.org/static/community_logos/python-logo.png"/><img width="75" height="75" src="https://github.com/kubernetes/kubernetes/raw/master/logo/logo.png"/>
 
-**python-helm** is a helm client for python.   
+**python-helm** is a helm client for python(2.9.1).   
 
 **[github地址](https://github.com/yxxhero/python-helm)**
 

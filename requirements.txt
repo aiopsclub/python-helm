@@ -1,4 +1,4 @@
-GitPython==2.1.9
+gitpython==2.1.9
 grpcio==1.12.1
 grpcio-tools==1.12.1
 protobuf==3.6.0

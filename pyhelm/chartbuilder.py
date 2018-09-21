@@ -3,33 +3,39 @@
 
 import logging
 import os
+
 import yaml
-from hapi.chart.template_pb2 import Template
-from hapi.chart.chart_pb2 import Chart
-from hapi.chart.metadata_pb2 import Metadata
-from hapi.chart.config_pb2 import Config
 from supermutes.dot import dotify
-from .utils.exceptions import CustomError
-from .repo import RepoUtils
+
+from api.common.exceptions import CustomError
+from api.common.pyhelm.repo import RepoUtils
+from hapi.chart.chart_pb2 import Chart
+from hapi.chart.config_pb2 import Config
+from hapi.chart.metadata_pb2 import Metadata
+from hapi.chart.template_pb2 import Template
+from google.protobuf.any_pb2 import Any
 
 LOG = logging.getLogger('pyhelm')
 
 __all__ = ["ChartBuilder", "coalesceTables", "pathtomap", "generate_values",
-            "source_clone", "source_cleanup", "get_metadata", "get_files", "get_values"
-            "get_templates", "get_dependencies", "get_helm_chart", "dump"]
+           "source_clone", "source_cleanup", "get_metadata", "get_files",
+           "get_values", "get_templates", "get_dependencies", "get_helm_chart",
+           "dump"]
+
 
 class ChartBuilder(object):
-    """ 
+    """
     This class handles taking chart intentions as a paramter and
     turning those into proper protoc helm charts that can be
     pushed to tiller.
 
     It also processes chart source declarations, fetching chart
     source from external resources where necessary
-    """ 
+    """
 
     def __init__(self, chart):
-        """构造函数,目的是生成tiller所需的chart数据
+        """
+        构造函数,目的是生成tiller所需的chart数据
         Args:
             chart: chart的信息字典
         Return:
@@ -48,7 +54,7 @@ class ChartBuilder(object):
 
         # extract, pull, whatever the chart from its source
         self.source_directory = self.source_clone()
- 
+
     def __str__(self):
         pass
 
@@ -57,7 +63,6 @@ class ChartBuilder(object):
 
     @staticmethod
     def coalesceTables(dst, src):
-
         """合并字典,将src的中的键值整合到dst中
         工具函数
         Args:
@@ -88,12 +93,11 @@ class ChartBuilder(object):
 
     @staticmethod
     def pathtomap(path, data):
-
         """根据path生成对应的字典结构结构
            example: server.port = 80 result: {"server":{"port": 80}}
         Args:
             path: server.port(str)
-            data: 80 
+            data: 80
         Return:
             返回生成的字典
         """
@@ -127,7 +131,6 @@ class ChartBuilder(object):
         Returns:
             返回tiller可接受的config对象
         """
-    
 
         if values is None:
             values = {}
@@ -152,9 +155,9 @@ class ChartBuilder(object):
             返回chart的文件所在目录
         '''
 
-
         if not 'type' in self.chart.source:
-            raise CustomError("Need source type for chart {}".format(self.chart.name)) 
+            raise CustomError(
+                "Need source type for chart {}".format(self.chart.name))
 
         if self.chart.source.type == 'repo':
             self._source_tmp_dir = RepoUtils.from_repo(self.chart.source.location,
@@ -164,7 +167,8 @@ class ChartBuilder(object):
             self._source_tmp_dir = self.chart.source.location
 
         else:
-            raise CustomError("Unknown source type {} for chart {}".format(self.chart.source.type, self.chart.name)) 
+            raise CustomError("Unknown source type {} for chart {}".format(
+                self.chart.source.type, self.chart.name))
 
         return os.path.join(self._source_tmp_dir)
 
@@ -196,15 +200,20 @@ class ChartBuilder(object):
 
     def get_files(self):
         '''
-        Return (non-template) files in this chart
+        根据官方的golang实现,未测试
         Args:
-
+            无参数
         Returns:
-            返回tiller所需的文件对象列表(暂未实现) 
-
-        TODO(alanmeadows): Not implemented
+            返回tiller所需的文件对象列表
         '''
-        return []
+        file_list = []
+        for root, _, files in os.walk(self.source_directory, topdown=True):
+            for tpl_file in files:
+                relativepath = os.path.relpath(os.path.join(root, tpl_file), self.source_directory)
+                if self.selectfile(relativepath):
+                    file_list.append(Any(type_url=relativepath, value=open(os.path.join(root, tpl_file)).read()))
+
+        return file_list
 
     def get_values(self):
         '''
@@ -238,15 +247,12 @@ class ChartBuilder(object):
         # building a Template object
         #import ipdb; ipdb.set_trace()
         templates = []
-        if not os.path.exists(os.path.join(self.source_directory,
-                                           'templates')):
+        if not os.path.exists(os.path.join(self.source_directory, 'templates')):
             pass
         for root, _, files in os.walk(os.path.join(self.source_directory,
                                                    'templates'), topdown=True):
             for tpl_file in files:
-                tname = os.path.relpath(os.path.join(root, tpl_file),
-                                        os.path.join(self.source_directory,
-                                                     'templates'))
+                tname = os.path.relpath(os.path.join(root, tpl_file), self.source_directory)
 
                 templates.append(Template(name=tname,
                                           data=open(os.path.join(root,
@@ -271,7 +277,7 @@ class ChartBuilder(object):
                                           'version': item["version"],
                                           'source': {'type': 'repo',
                                                      'location': item["repository"]}}).get_helm_chart()
-                                                      for item in dependencies_info["dependencies"]]
+                            for item in dependencies_info["dependencies"]]
 
                 else:
                     return dependencies
@@ -304,6 +310,13 @@ class ChartBuilder(object):
         self.source_cleanup()
         return helm_chart
 
+    def selectfile(self, filepath):
+
+        if filepath == "Chart.yaml" or filepath == "values.yaml" or filepath =="values.toml" or filepath.startswith("templates/") or filepath.startswith("charts/"):
+            return False
+        else:
+            return True
+
     def dump(self):
         '''
         序列化chart对象
@@ -313,6 +326,7 @@ class ChartBuilder(object):
         '''
         return self.get_helm_chart().SerializeToString()
 
+
 if __name__ == "__main__":
-    import chartbuilder 
+    import chartbuilder
     print(help(chartbuilder))

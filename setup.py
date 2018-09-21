@@ -11,16 +11,16 @@ setup(
     ),
     long_description=open('README.rst').read(),
     install_requires=[
-        GitPython==2.1.9,
-        grpcio==1.12.1,
-        grpcio-tools==1.12.1,
-        protobuf==3.6.0,
-        PyYAML==3.12,
-        requests==2.19.1,
-        requests-oauthlib==0.8.0,
-        requestsexceptions==1.4.0,
-        supermutes==0.2.5
-        ]
+        "gitpython==2.1.9",
+        "grpcio==1.12.1",
+        "grpcio-tools==1.12.1",
+        "protobuf==3.6.0",
+        "PyYAML==3.12",
+        "requests==2.19.1",
+        "requests-oauthlib==0.8.0",
+        "requestsexceptions==1.4.0",
+        "supermutes==0.2.5"
+        ],
     author='yxxhero',
     author_email='18333610114@163.com',
     maintainer='yxxhero',

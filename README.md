@@ -64,30 +64,36 @@ grpc python协议文件生成
 
 **How to use it** 
 --
-1. First you need repo_url and chart name to download chart:  
-   \# from pyhelm.repo import RepoUtils  
-   \# chart_path = from_repo('https://kubernetes-charts.storage.googleapis.com/', 'mariadb')  
-   \# print(chart_path)  
-   \# "/tmp/pyhelm-kibwtj8d/mongodb"  
+1. First you need repo_url and chart name to download chart:
+```python
+    In [1]: from pyhelm.repo import RepoUtils  
+    In [2]: chart_path = from_repo('https://kubernetes-charts.storage.googleapis.com/', 'mariadb')  
+    In [3]: print(chart_path)  
+    "/tmp/pyhelm-kibwtj8d/mongodb"  
+```
 
 2. Next step to build ChartBuilder instance to manipulate with Tiller.  
-   \# from pyhelm.chartbuilder import ChartBuilder  
-   \# chart = ChartBuilder({'name': 'mongodb', 'source': {'type': 'directory', 'location': '/tmp/pyhelm-kibwtj8d/mongodb'}})   
- 
+```python
+   In [1]: from pyhelm.chartbuilder import ChartBuilder  
+   In [2]: chart = ChartBuilder({'name': 'mongodb', 'source': {'type': 'directory', 'location': '/tmp/pyhelm-kibwtj8d/mongodb'}})   
+```
 3. Control tiller  
-   \# from pyhelm.chartbuilder import ChartBuilder  
-   \# from pyhelm.tiller import Tiller  
-   \# 构建chart元数据  
-   \# chart = ChartBuilder({'name': 'mongodb', 'source': {'type': 'directory', 'location': '/tmp/pyhelm-kibwtj8d/mongodb'}})  
-   \# 生成tiller连接实例  
-   \# tiller_ins = Tiller(tiller_host, tiller_port)  
-   \# 安装 release  
-   \# tiller_ins.install_release(chart.get_helm_chart(), dry_run=False, namespace='default')  
-   \# 列出 release  
-   \# tiller_ins.list_releases(limit=RELEASE_LIMIT, status_codes=[], namespace=None)  
-   \# 删除 release  
-   \# tiller_ins.uninstall_release(release_name)  
-   \# 获得 release 版本历史  
-   \# tiller_ins.get_history(name, max=MAX_HISTORY)  
-   \# 回滚 release  
-   \# tiller_ins.rollback_release(name, version, timeout=REQUEST_TIMEOUT)
+
+```python
+from pyhelm.chartbuilder import ChartBuilder  
+from pyhelm.tiller import Tiller  
+# 构建chart元数据  
+chart = ChartBuilder({'name': 'mongodb', 'source': {'type': 'directory', 'location': '/tmp/pyhelm-kibwtj8d/mongodb'}})  
+# 生成tiller连接实例  
+tiller_ins = Tiller(tiller_host, tiller_port)  
+# 安装 release  
+tiller_ins.install_release(chart.get_helm_chart(), dry_run=False, namespace='default')  
+# 列出 release  
+tiller_ins.list_releases(limit=RELEASE_LIMIT, status_codes=[], namespace=None)  
+# 删除 release  
+tiller_ins.uninstall_release(release_name)  
+# 获得 release 版本历史  
+tiller_ins.get_history(name, max=MAX_HISTORY) 
+# 回滚 release  
+tiller_ins.rollback_release(name, version, timeout=REQUEST_TIMEOUT)
+```

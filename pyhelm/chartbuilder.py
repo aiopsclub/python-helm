@@ -4,7 +4,7 @@
 import logging
 import os
 import sys
-print(sys.path)
+sys.path.insert(0,os.path.split(os.path.abspath(os.path.dirname(__file__)))[0])
 
 import yaml
 from supermutes.dot import dotify
@@ -15,15 +15,15 @@ from hapi.chart.metadata_pb2 import Metadata
 from hapi.chart.template_pb2 import Template
 from google.protobuf.any_pb2 import Any
 
-from .utils.exceptions import CustomError
-from .repo import RepoUtils
+from utils.exceptions import CustomError
+from repo import RepoUtils
 
 LOG = logging.getLogger('pyhelm')
 
 __all__ = ["ChartBuilder", "coalesceTables", "pathtomap", "generate_values",
            "source_clone", "source_cleanup", "get_metadata", "get_files",
            "get_values", "get_templates", "get_dependencies", "get_helm_chart",
-           "dump"]
+           "dump", "selectfile"]
 
 
 class ChartBuilder(object):

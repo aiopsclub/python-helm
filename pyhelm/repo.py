@@ -15,7 +15,7 @@ import tarfile
 import tempfile
 import yaml
 
-from .utils.exceptions import CustomError
+from utils.exceptions import CustomError
 
 __all__ = ["RepoUtils", "repo_chart", "repo_search", "chart_versions", "repo_index", "from_repo", "git_clone", "source_cleanup"]
 class RepoUtils(object):

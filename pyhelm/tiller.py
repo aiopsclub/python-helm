@@ -3,6 +3,9 @@
 
 import grpc
 import logging
+import sys 
+import os
+sys.path.insert(0,os.path.split(os.path.abspath(os.path.dirname(__file__)))[0])
 
 from hapi.services.tiller_pb2 import ReleaseServiceStub, ListReleasesRequest, \
     InstallReleaseRequest, UpdateReleaseRequest, UninstallReleaseRequest, \

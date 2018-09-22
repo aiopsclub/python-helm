@@ -55,7 +55,7 @@ affinity: {}
 """
 
 
-default_ignore = """
+ignore_template = """
 # Patterns to ignore when building packages.
 # This supports shell glob matching, relative path matching, and
 # negation (prefixed with !). Only one pattern per line.
@@ -272,7 +272,7 @@ all_templates = {
     'deployment.yaml': deployment_template,
     'service.yaml': service_template,
     'NOTES.txt': note_template,
-    '.helmignore': default_ignore,
+    '.helmignore': ignore_template,
 }
 
 

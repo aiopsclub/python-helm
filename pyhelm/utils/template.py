@@ -266,18 +266,16 @@ version: {version}
 """
 
 
-template_name = {
+all_templates = {
     'values.yaml': values_template,
     '_helpers.yaml': helpers_template,
-    # 'Chart.yaml': chart_default,
     'deployment.yaml': deployment_template,
     'service.yaml': service_template,
     'NOTES.txt': note_template,
     '.helmignore': default_ignore,
 }
 
-# base_dir = os.path.abspath(os.path.dirname(__file__))
-# print(base_dir)
+
 chart_default = {
     'description': "A Helm chart for Kubernetes",
     'version': '0.1.0',
@@ -305,13 +303,7 @@ class Chart(object):
         if os.path.exists(chart_path) and os.path.isfile(chart_path):
             raise CustomError("file %s already exists and is not a directory" % chart_path)
 
-        if os.path.exists(chart_path):
-            pass
-        else:
-            try:
-                os.mkdir(chart_path, 0755)
-            except OSError as e:
-                raise CustomError("create chart fail, %s" % e)
+        self._mkdir_directory(chart_path)
 
         self._save_chart_file(base_path=chart_path, name=self.chart_name)
         self._mkdir_directory(path=chart_path, name='charts')
@@ -319,14 +311,14 @@ class Chart(object):
         template_path = os.path.join(chart_path, 'templates')
         self._save_to_file(template_path)
 
-    def _mkdir_directory(self, path, name):
+    def _mkdir_directory(self, path, name=None):
         """
 
         :param base_path:
         :param name:
         :return:
         """
-        path = os.path.join(path, name)
+        path = os.path.join(path, name) if name else path
         if os.path.exists(path):
             pass
         else:
@@ -352,7 +344,7 @@ class Chart(object):
             f.write(data)
 
     def _save_to_file(self, path):
-        for name, template in template_name.items():
+        for name, template in all_templates.items():
             if name == '.helmignore' or name == 'values.yaml':
                 ignore_path = os.path.join(os.path.abspath(os.path.dirname(path)), name)
                 with open(ignore_path, 'wb') as f:
@@ -365,5 +357,5 @@ class Chart(object):
 
 if __name__ == '__main__':
     path = '/Users/guoweikuang/project'
-    chart = Chart('helm-test', path)
+    chart = Chart('helm-test1', path)
     chart.create()

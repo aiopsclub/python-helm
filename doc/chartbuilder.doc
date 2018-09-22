@@ -1,7 +1,7 @@
-Help on module pyhelm.chartbuilder in pyhelm:
+Help on module chartbuilder:
 
 NAME
-    pyhelm.chartbuilder - class ChartBuilder 主要功能是生成tiller所需的chart元数据
+    chartbuilder - class ChartBuilder 主要功能是生成tiller所需的chart元数据
 
 CLASSES
     builtins.object
@@ -48,13 +48,11 @@ CLASSES
      |          返回tiller所需的dependcies对象
      |  
      |  get_files(self)
-     |      Return (non-template) files in this chart
+     |      根据官方的golang实现,未测试
      |      Args:
-     |      
+     |          无参数
      |      Returns:
-     |          返回tiller所需的文件对象列表(暂未实现) 
-     |      
-     |      TODO(alanmeadows): Not implemented
+     |          返回tiller所需的文件对象列表
      |  
      |  get_helm_chart(self)
      |      Return a helm chart object
@@ -87,6 +85,8 @@ CLASSES
      |      
      |      Returns:
      |          返回tiller所需的values对象
+     |  
+     |  selectfile(self, filepath)
      |  
      |  source_cleanup(self)
      |      Cleanup source
@@ -128,7 +128,7 @@ CLASSES
      |         example: server.port = 80 result: {"server":{"port": 80}}
      |      Args:
      |          path: server.port(str)
-     |          data: 80 
+     |          data: 80
      |      Return:
      |          返回生成的字典
      |  

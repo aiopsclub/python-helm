@@ -214,7 +214,7 @@ class ChartBuilder(object):
             for tpl_file in files:
                 relativepath = os.path.relpath(os.path.join(root, tpl_file), self.source_directory)
                 if self.selectfile(relativepath):
-                    file_list.append(Any(type_url=relativepath, value=bytes(open(os.path.join(root, tpl_file)).read(), encoding="utf-8")))
+                    file_list.append(Any(type_url=relativepath, value=open(os.path.join(root, tpl_file), "rb").read()))
 
         return file_list
 

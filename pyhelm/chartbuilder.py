@@ -4,7 +4,7 @@
 import logging
 import os
 import sys
-sys.path.insert(0,os.path.split(os.path.abspath(os.path.dirname(__file__)))[0])
+sys.path.insert(0, os.path.split(os.path.abspath(os.path.dirname(__file__)))[0])
 
 import yaml
 from supermutes.dot import dotify
@@ -214,7 +214,7 @@ class ChartBuilder(object):
             for tpl_file in files:
                 relativepath = os.path.relpath(os.path.join(root, tpl_file), self.source_directory)
                 if self.selectfile(relativepath):
-                    file_list.append(Any(type_url=relativepath, value=open(os.path.join(root, tpl_file)).read()))
+                    file_list.append(Any(type_url=relativepath, value=bytes(open(os.path.join(root, tpl_file)).read(), encoding="utf-8")))
 
         return file_list
 

@@ -15,7 +15,7 @@ setup(
         "grpcio==1.12.1",
         "grpcio-tools==1.12.1",
         "protobuf==3.6.0",
-        "PyYAML==3.12",
+        "PyYAML>=4.2b1",
         "requests==2.19.1",
         "requests-oauthlib==0.8.0",
         "requestsexceptions==1.4.0",

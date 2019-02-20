@@ -21,16 +21,18 @@ class CreateChart(object):
         chart_path = os.path.join(cls._tmp_dir, chart_name)
         print(chart_path)
         if os.path.exists(chart_path) and os.path.isfile(chart_path):
-            raise CustomError("Chart path `%s` already exists or path is not a directory" % chart_path)
+            raise CustomError(
+                "Chart path `%s` already exists or path is not a directory" % chart_path)
 
         chart_path = cls._mkdir_chart_directory(cls._tmp_dir, chart_name)
         cls._mkdir_chart_directory(chart_path, "charts")
         template_path = cls._mkdir_chart_directory(chart_path, "templates")
-        cls._save_chart_template_to_file(chart_path, chart_name=chart_name, is_chart=True)
+        cls._save_chart_template_to_file(
+            chart_path, chart_name=chart_name, is_chart=True)
         cls._save_chart_template_to_file(template_path)
 
     @classmethod
-    def _mkdir_chart_directory(cls, chart_path, name, mode=0755):
+    def _mkdir_chart_directory(cls, chart_path, name, mode=0o755):
         """Create directory to save chart template.
 
         :param chart_path: the path of the chart
@@ -46,7 +48,6 @@ class CreateChart(object):
             except OSError as e:
                 raise CustomError("Create directory failed, %s" % e)
         return path
-
 
     @classmethod
     def _save_chart_template_to_file(cls, base_path, chart_name=None, is_chart=False):
@@ -76,7 +77,6 @@ class CreateChart(object):
                 name_path = os.path.join(base_path, name)
                 with open(name_path, 'wb') as f:
                     f.write(template)
-
 
 
 if __name__ == '__main__':

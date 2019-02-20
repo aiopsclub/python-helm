@@ -1,16 +1,27 @@
 # -*- coding:utf-8 -*-
-""" Tiller class 注意包含对tiller的控制函数"""
+import logging
+import os
+import sys
+
+import yaml
 
 import grpc
-import logging
-import sys
-import os
-sys.path.insert(0, os.path.split(os.path.abspath(os.path.dirname(__file__)))[0])
+from hapi.chart.config_pb2 import Config
+from hapi.services.tiller_pb2 import (GetHistoryRequest,
+                                      GetReleaseContentRequest,
+                                      GetReleaseStatusRequest,
+                                      GetVersionRequest, InstallReleaseRequest,
+                                      ListReleasesRequest, ReleaseServiceStub,
+                                      RollbackReleaseRequest,
+                                      TestReleaseRequest,
+                                      UninstallReleaseRequest,
+                                      UpdateReleaseRequest)
 
-from hapi.services.tiller_pb2 import ReleaseServiceStub, ListReleasesRequest, \
-    InstallReleaseRequest, UpdateReleaseRequest, UninstallReleaseRequest, \
-    GetReleaseContentRequest, GetReleaseStatusRequest, GetVersionRequest, \
-    RollbackReleaseRequest, GetHistoryRequest, TestReleaseRequest
+""" Tiller class 注意包含对tiller的控制函数"""
+
+sys.path.insert(0, os.path.split(
+    os.path.abspath(os.path.dirname(__file__)))[0])
+
 
 LOG = logging.getLogger('pyhelm')
 TILLER_PORT = 44134
@@ -24,6 +35,8 @@ __all__ = ["Tiller", "metadata", "get_channel", "tiller_status", "get_release_co
            "get_release_status", "list_releases", "list_charts", "update_release",
            "install_release", "rollback_release", "get_history", "test_release",
            "uninstall_release", "get_version", "chart_cleanup"]
+
+
 class Tiller(object):
     '''
     Tiller class 通过grpc协议与tiller进行交流.
@@ -92,10 +105,11 @@ class Tiller(object):
             if self.cert_cert is not None:
                 with open(self.cert_cert, 'rb') as f:
                     cert_cert_file = f.read()
-            creds = grpc.ssl_channel_credentials(ca_cert_file, cert_key_file, cert_cert_file)
-            return grpc.secure_channel(self._host + ":" + self._port, creds, 
+            creds = grpc.ssl_channel_credentials(
+                ca_cert_file, cert_key_file, cert_cert_file)
+            return grpc.secure_channel(self._host + ":" + self._port, creds,
                                        options=(('grpc.ssl_target_name_override',
-                                       self.ssl_target_name_override,),))
+                                                 self.ssl_target_name_override,),))
         else:
             return grpc.insecure_channel('%s:%s' % (self._host, self._port))
 
@@ -135,7 +149,7 @@ class Tiller(object):
         stub = ReleaseServiceStub(self.channel)
         req = GetReleaseStatusRequest(name=name)
         release_status = stub.GetReleaseStatus(req, self.timeout,
-                                                metadata=self.metadata)
+                                               metadata=self.metadata)
         return release_status
 
     def list_releases(self, limit=RELEASE_LIMIT, status_codes=[], namespace=None):
@@ -152,7 +166,8 @@ class Tiller(object):
         '''
         releases = []
         stub = ReleaseServiceStub(self.channel)
-        req = ListReleasesRequest(limit=limit, status_codes=status_codes, namespace=namespace or '')
+        req = ListReleasesRequest(
+            limit=limit, status_codes=status_codes, namespace=namespace or '')
         release_list = stub.ListReleases(req, self.timeout,
                                          metadata=self.metadata)
         for y in release_list:
@@ -196,7 +211,7 @@ class Tiller(object):
             返回升级release的grpc响应对象
         """
 
-        #values = Config(raw=yaml.safe_dump(values or {}))
+        values = Config(raw=yaml.safe_dump(values or {}))
 
         # build update release request
         stub = ReleaseServiceStub(self.channel)
@@ -223,13 +238,13 @@ class Tiller(object):
         Args:
             :params - chart - chart 元数据,由函数生成
             :params - name - release name,为空时随机生成
-            :params - namespace - kubernetes namespace 
-            :params - dry_run - simulate an install 
+            :params - namespace - kubernetes namespace
+            :params - dry_run - simulate an install
             :params - values - 额外的values,用来进行value值替换
             :params - disable_hooks - prevent hooks from running during install(bool)
-            :params - disable_crd_hook - prevent CRD hooks from running, but run other hooks(bool) 
-            :params - reuse_name - re-use the given name, even if that name is already used. This is unsafe in production(bool) 
-            :params - timeout - time in seconds to wait for any individual Kubernetes operation (like Jobs for hooks) (default 300) 
+            :params - disable_crd_hook - prevent CRD hooks from running, but run other hooks(bool)
+            :params - reuse_name - re-use the given name, even if that name is already used. This is unsafe in production(bool)
+            :params - timeout - time in seconds to wait for any individual Kubernetes operation (like Jobs for hooks) (default 300)
         Returns:
             返回安装release的grpc响应对象
         """
@@ -336,7 +351,7 @@ class Tiller(object):
     def get_version(self):
         """GetVersion returns the current version of the server
         Args:
-        
+
         Returns:
             返回tiller的版本grpc响应对象
         """
@@ -368,6 +383,7 @@ class Tiller(object):
             if chart.startswith(prefix):
                 LOG.debug("Release: %s will be removed", chart)
                 self.uninstall_release(chart)
+
 
 if __name__ == "__main__":
     import tiller

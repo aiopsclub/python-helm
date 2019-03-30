@@ -1,4 +1,6 @@
 **Welcome to python-helm**
+---  
+<a href="https://996.icu"><img src="https://img.shields.io/badge/link-996.icu-red.svg"></a>
 ---
 
 <img width="75" height="75" src="https://helm.sh/src/img/helm-logo.svg"/><img width="200" height="75" src="https://www.python.org/static/community_logos/python-logo.png"/><img width="75" height="75" src="https://github.com/kubernetes/kubernetes/raw/master/logo/logo.png"/>

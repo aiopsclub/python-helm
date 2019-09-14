@@ -5,7 +5,7 @@
 [![Slack](https://img.shields.io/badge/slack-996icu-green.svg)](https://join.slack.com/t/996icu/shared_invite/enQtNTg4MjA3MzA1MzgxLWQyYzM5M2IyZmIyMTVjMzU5NTE5MGI5Y2Y2YjgwMmJiMWMxMWMzNGU3NDJmOTdhNmRlYjJlNjk5ZWZhNWIwZGM)
 ---
 
-<img width="75" height="75" src="https://helm.sh/src/img/helm-logo.svg"/><img width="200" height="75" src="https://www.python.org/static/community_logos/python-logo.png"/><img width="75" height="75" src="https://github.com/kubernetes/kubernetes/raw/master/logo/logo.png"/>
+<img width="75" height="75" src="https://helm.sh/img/helm-logo.svg"/><img width="200" height="75" src="https://www.python.org/static/community_logos/python-logo.png"/><img width="75" height="75" src="https://github.com/kubernetes/kubernetes/raw/master/logo/logo.png"/>
 
 **python-helm** is a helm client for python(tiller version: 2.9.1).   
 

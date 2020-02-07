@@ -11,9 +11,6 @@
 
 **[github地址](https://github.com/yxxhero/python-helm)**
 
-**寄语**  
---
-最近在写自己的个人博客，马上就写完，写完后把这个项目按计划好好更新一波  
 
 **TODO**  
 --  

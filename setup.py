@@ -12,7 +12,7 @@ setup(
     long_description=open('README.rst').read(),
     install_requires=[
         "gitpython==2.1.9",
-        "grpcio==1.12.1",
+        "grpcio==1.53.0",
         "grpcio-tools==1.12.1",
         "protobuf==3.18.3",
         "PyYAML>=4.2b1",
